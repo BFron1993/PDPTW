@@ -92,7 +92,7 @@ public class ConfigurationReader {
             double lastChanceToPickup = deliveryProxy.endTimeWindow - serviceTimePickupPlusGoingToDelivery;
             if (lastChanceToPickup < pickupProxy.endTimeWindow) 
             {
-                pickupProxy.endTimeWindow = lastChanceToPickup;
+                pickupProxy.endTimeWindow = lastChanceToPickup - 0.0000000000001;
             }
             
             commissions.add(new Commission(new Action(pickupProxy), new Action(deliveryProxy), index++));  
