@@ -71,4 +71,13 @@ public class Solution {
         }
         return sum;
     }
+    
+    public void removeCommission(Commission commission)
+    {
+        int commissionId = commission.getId();
+        int scheduleId = this.commissionScheduleMap.get(commissionId);
+        Schedule scheduleToRemoveFrom = this.indexScheduleMap.get(scheduleId);
+        scheduleToRemoveFrom.removeCommission(commissionId);
+        this.commissionScheduleMap.remove(commissionId);
+    }
 }

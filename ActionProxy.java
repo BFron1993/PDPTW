@@ -3,8 +3,8 @@ public class ActionProxy {
     public int demand;
     public int x;
     public int y;
-    public int beginTimeWindow;
-    public int endTimeWindow;
+    public double beginTimeWindow;
+    public double endTimeWindow;
     public int serviceTime;
     public int siblingIndex;
     

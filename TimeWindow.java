@@ -1,8 +1,8 @@
 public class TimeWindow {
-    public int begin;
-    public int end;
+    public double begin;
+    public double end;
     
-    public TimeWindow(int begin, int end)
+    public TimeWindow(double begin, double end)
     {
         this.begin = begin;
         this.end = end;

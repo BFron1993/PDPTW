@@ -169,12 +169,12 @@ public class Schedule {
         return ret;     
     }
 
-    private double getIndexToInsertForPickup(double leftBorder, double rightBorder, int begin, int end) {
+    private double getIndexToInsertForPickup(double leftBorder, double rightBorder, double begin, double end) {
         double left = Math.max(leftBorder, begin);
         double right = Math.min(rightBorder, end);
         if (left <= right) 
         {
-            return left;
+            return right;
         }
         else
         {
@@ -220,7 +220,7 @@ public class Schedule {
         }
     }
 
-    private double getIndexToInsertForDelivery(double leftBorder, double rightBorder, int begin, int end) {
+    private double getIndexToInsertForDelivery(double leftBorder, double rightBorder, double begin, double end) {
         double left = Math.max(leftBorder, begin);
         double right = Math.min(rightBorder, end);
         if (left <= right) 
@@ -290,6 +290,14 @@ public class Schedule {
         for(Interval x : this.intervals) {
             System.out.format("%5s%20s%20s%20s\n", x.commissionIndex, x.begin, x.end, x.type);
         }
+    }
+    
+    void removeCommission(int commissionId)
+    {
+        removeDelivery(commissionId);
+        removePickup(commissionId);
+        sortIntervals();
+        reCountGoings();
     }
     
     

@@ -85,6 +85,16 @@ public class ConfigurationReader {
         {
             ActionProxy deliveryProxy = FindCorrespondigDelivery(pickupProxy, deliveries);
             
+            Location locationPickup = new Location(pickupProxy.x, pickupProxy.y);
+            Location locationDelivery = new Location(deliveryProxy.x, deliveryProxy.y);
+            
+            double serviceTimePickupPlusGoingToDelivery = pickupProxy.serviceTime + locationPickup.getDistanceTo(locationDelivery);
+            double lastChanceToPickup = deliveryProxy.endTimeWindow - serviceTimePickupPlusGoingToDelivery;
+            if (lastChanceToPickup < pickupProxy.endTimeWindow) 
+            {
+                pickupProxy.endTimeWindow = lastChanceToPickup;
+            }
+            
             commissions.add(new Commission(new Action(pickupProxy), new Action(deliveryProxy), index++));  
         }
         

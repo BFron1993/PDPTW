@@ -1,7 +1,7 @@
 public class Action {
     private int demand;
-    private int timeWindowBegin;
-    private int timeWindowEnd;
+    private double timeWindowBegin;
+    private double timeWindowEnd;
     private Location location;
     private int serviceTime;
     
