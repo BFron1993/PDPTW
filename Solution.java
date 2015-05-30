@@ -63,4 +63,12 @@ public class Solution {
             System.out.println("-----------------------------------------------------------------");
         }
     }
+
+    public double getCost() {
+        double sum = 0.0;
+        for (Schedule schedule : indexScheduleMap.values()) {
+            sum += schedule.countCost();
+        }
+        return sum;
+    }
 }

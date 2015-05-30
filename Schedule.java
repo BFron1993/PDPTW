@@ -158,7 +158,7 @@ public class Schedule {
         }
     }
 
-    private double countCost() {
+    public double countCost() {
         double ret = 0;
         
         for(Interval x : intervals)

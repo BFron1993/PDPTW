@@ -17,5 +17,6 @@ public class Launcher {
         
         Solution solution = new LargeNeighbourhoodAlgorithm().run(config);
         solution.printSchedules();
+        System.out.println("Cost: " + solution.getCost());
     }
 }
