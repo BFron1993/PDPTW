@@ -53,7 +53,7 @@ public class Solution {
         this.indexScheduleMap.get(properties.scheduleIndex).addCommissionPrecisively(properties, commission);
     }
     
-    public void PrintSchedules()
+    public void printSchedules()
     {
         for(Schedule x : indexScheduleMap.values())
         {

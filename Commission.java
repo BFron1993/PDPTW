@@ -53,4 +53,10 @@ class Commission {
     {
         return this.delivery.getDemand();
     }
+
+    double getPickupDeliveryPathLength(Location location) {
+        return location.getDistanceTo(this.getPickupLocation())
+                + this.getPickupLocation().getDistanceTo(this.getDeliveryLocation())
+                + this.getDeliveryLocation().getDistanceTo(location);
+    }
 }

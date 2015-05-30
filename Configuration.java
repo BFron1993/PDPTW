@@ -17,22 +17,22 @@ public class Configuration {
     
     public Location getBaseLocation()
     {
-        return this.baseLocation;
+        return baseLocation;
     }
     
     public int getTimeLimit()
     {
-        return this.timeLimit;
+        return timeLimit;
     }
     
     public int getCapacity()
     {
-        return this.holonCapacity;
+        return holonCapacity;
     }
     
     public List<Commission> getCommissions()
     {
-        return this.commissions;
+        return commissions;
     }
     
 }
