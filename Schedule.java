@@ -287,9 +287,8 @@ public class Schedule {
 
     void printIntervals() {
         sortIntervals();
-        for(Interval x : this.intervals)
-        {
-            System.out.println(x.begin + "---" + x.end + "--" +  x.type);
+        for(Interval x : this.intervals) {
+            System.out.format("%5s%20s%20s%20s\n", x.commissionIndex, x.begin, x.end, x.type);
         }
     }
     

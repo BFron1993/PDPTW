@@ -16,6 +16,7 @@ public class Solution {
         this.timeLimit = timeLimit;
         this.capacity = capacity;
     }
+
     
     public int getNewSchedule()
     {
@@ -57,7 +58,9 @@ public class Solution {
     {
         for(Schedule x : indexScheduleMap.values())
         {
+            System.out.println("Holon " + x.getIndex());
             x.printIntervals();
+            System.out.println("-----------------------------------------------------------------");
         }
     }
 }
