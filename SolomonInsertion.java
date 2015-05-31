@@ -26,24 +26,32 @@ public class SolomonInsertion {
         return unrouted;
     }
 
-    private List<InsertProperties> getCandidatesForInsertionAndTryToRemove(Solution solution, List<Commission> unrouted, int scheduleIndex) {
+    private double getC2(double lambdaParameter, Commission commission, Location baseLocation, double c1) {
+        return lambdaParameter * commission.getPickupDeliveryPathLength(baseLocation) - c1;
+    }
+
+    private List<InsertProperties> getCandidatesForInsertionAndTryToRemove(Solution solution, List<Commission> unrouted,
+                                                                           int scheduleIndex, Location baseLocation,
+                                                                           double lambdaParameter) {
         List<InsertProperties> candidatesForInsertion = new ArrayList<InsertProperties>();
-        Double minimalCost = null;
+        Double maximalC2 = null;
+        Double currentC2;
         InsertProperties bestProperties = null;
         Commission commissionToRemove = null;
         for (Commission commission : unrouted) {
             InsertProperties properties = solution.countCostOfInsert(commission, scheduleIndex);
             if (properties != null) {
                 candidatesForInsertion.add(properties);
-                if(minimalCost == null || minimalCost > properties.cost) {
-                    minimalCost = properties.cost;
+                currentC2 = getC2(lambdaParameter, commission, baseLocation, properties.cost);
+                if(maximalC2 == null || maximalC2 < currentC2) {
+                    maximalC2 = currentC2;
                     bestProperties = properties;
                     commissionToRemove = commission;
                 }
             }
         }
 
-        if (minimalCost != null) {
+        if (maximalC2 != null) {
             solution.addCommission(bestProperties, commissionToRemove);
             unrouted.remove(commissionToRemove);
         }
@@ -51,7 +59,7 @@ public class SolomonInsertion {
         return candidatesForInsertion;
     }
 
-    public Solution getInitialSolution(Configuration configuration) {
+    public Solution getInitialSolution(Configuration configuration, double lambdaParameter) {
         int timeLimit = configuration.getTimeLimit();
         int capacity = configuration.getCapacity();
         List<Commission> commissions = configuration.getCommissions();
@@ -70,9 +78,11 @@ public class SolomonInsertion {
             solution.addCommission(solution.countCostOfInsert(leader, scheduleIndex), leader);
             unrouted.remove(leader);
 
-            List<InsertProperties> candidatesForInsertion = getCandidatesForInsertionAndTryToRemove(solution, unrouted, scheduleIndex);
+            List<InsertProperties> candidatesForInsertion = getCandidatesForInsertionAndTryToRemove(solution, unrouted,
+                    scheduleIndex, baseLocation, lambdaParameter);
             while(!candidatesForInsertion.isEmpty()) {
-                candidatesForInsertion = getCandidatesForInsertionAndTryToRemove(solution, unrouted, scheduleIndex);
+                candidatesForInsertion = getCandidatesForInsertionAndTryToRemove(solution, unrouted,
+                        scheduleIndex, baseLocation, lambdaParameter);
             }
         }
 
