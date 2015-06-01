@@ -3,5 +3,5 @@
  */
 public interface IAlgorithm {
 
-    public Solution run(Configuration configuration);
+    public Solution run(Configuration configuration, int numberOfIterations);
 }
