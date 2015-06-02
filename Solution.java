@@ -17,6 +17,14 @@ public class Solution {
         this.capacity = capacity;
     }
 
+    public Map<Integer, Schedule> getIndexScheduleMap() {
+        return indexScheduleMap;
+    }
+
+    public int getNumberOfHolons() {
+        return indexScheduleMap.size();
+    }
+
     
     public int getNewSchedule()
     {
