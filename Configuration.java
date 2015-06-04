@@ -1,4 +1,5 @@
 
+import java.util.Collections;
 import java.util.List;
 
 public class Configuration {
@@ -35,4 +36,8 @@ public class Configuration {
         return commissions;
     }
     
+    public void ShuffleCommissions()
+    {
+        Collections.shuffle(commissions);
+    }
 }

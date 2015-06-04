@@ -1,5 +1,6 @@
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Solution {
@@ -88,4 +89,30 @@ public class Solution {
         scheduleToRemoveFrom.removeCommission(commissionId);
         this.commissionScheduleMap.remove(commissionId);
     }
+    
+    public CommissionViewAndCost tryToAddCommissionBruteForce(Commission commission, int indexOfSchedule)
+    {
+        Schedule schedule = this.indexScheduleMap.get(indexOfSchedule);
+        CommissionViewAndCost ret = schedule.tryToAddBruteForce(commission);
+        return ret;
+    }
+
+    void addCommission(CommissionViewAndCost best, Commission commission) 
+    {
+        this.commissionScheduleMap.put(commission.getId(), best.scheduleId);
+        this.indexScheduleMap.get(best.scheduleId).addCommissionPrecisively(best, commission);
+    }
+    
+    public List<Commission> removeSchedule(int schduleIndex)
+    {
+        Schedule schedule = this.indexScheduleMap.get(schduleIndex);
+        this.indexScheduleMap.remove(schduleIndex);
+        List<Commission> retCommissions = schedule.getCommissions();
+        for(Commission x : retCommissions)
+        {
+            this.commissionScheduleMap.remove(x.getId());
+        }
+        return retCommissions;
+    }
+    
 }

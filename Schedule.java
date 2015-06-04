@@ -1,7 +1,12 @@
 
+import com.rits.cloning.Cloner;
+import com.rits.cloning.*;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class Schedule {
     
@@ -11,7 +16,9 @@ public class Schedule {
     private int holonCapacity;
     private int timeLimit;
     private Location locationBase;
-    private LinkedList<Interval> intervals = new LinkedList<>();
+    private List<Interval> intervals = new LinkedList<>();
+    private Map<Integer, Commission> commissions = new HashMap<Integer, Commission>();
+    private List<Integer> commissionIds = new LinkedList<>();
     
     public Schedule(int holonCapacity, int timeLimit, Location base)
     {
@@ -276,29 +283,149 @@ public class Schedule {
         return true;
     }
 
-    void addCommissionPrecisively(InsertProperties properties, Commission commission) {
+    public void addCommissionPrecisively(InsertProperties properties, Commission commission) {
         Interval insertInterval = new Interval(properties.pickupIndex, properties.pickupIndex, properties.pickupIndex + commission.getPickupServiceTime(), IntervalType.PICKUP, commission.getId(), commission.getPicupDemand(), commission.getPickupLocation());
         Interval deliveryInterval = new Interval(properties.deliveryIndex, properties.deliveryIndex, properties.deliveryIndex + commission.getDeliveryServiceTime(), IntervalType.DELIVERY, commission.getId(), commission.getDeliveryDemand(), commission.getDeliveryLocation());
         this.intervals.add(insertInterval);
         this.intervals.add(deliveryInterval);
         sortIntervals();
         reCountGoings();
+        this.commissions.put(commission.getId(), commission);
+        this.commissionIds.add(commission.getId());
     }
 
-    void printIntervals() {
+    public void printIntervals() {
         sortIntervals();
         for(Interval x : this.intervals) {
             System.out.format("%5s%20s%20s%20s\n", x.commissionIndex, x.begin, x.end, x.type);
         }
     }
     
-    void removeCommission(int commissionId)
+    public void removeCommission(int commissionId)
     {
         removeDelivery(commissionId);
         removePickup(commissionId);
         sortIntervals();
         reCountGoings();
+        this.commissionIds.remove(commissionId);
+        this.commissions.remove(commissionId);
+    }
+
+    public CommissionViewAndCost tryToAddBruteForce(Commission commission) {
+        List<Interval> oldIntervals = this.intervals;
+        double oldCost = countCost();
+        CommissionViewAndCost best = null;
+        List<int[]> permutations = generatePermutations(this.commissionIds, commission.getId());
+        this.commissions.put(commission.getId(), commission);
+        
+        for (int[] x : permutations) 
+        {
+            CommissionViewAndCost result = checkPermutation(oldCost, x);
+            if (result != null) 
+            {
+                if (best != null) 
+                {
+                    if (result.cost < best.cost) 
+                    {
+                        best = result;
+                    }
+                }
+                else
+                {
+                    best = result;
+                }
+            }
+        }
+        
+        this.intervals = oldIntervals;
+        this.commissions.remove(commission.getId());
+        
+        return best;
+        
+    }
+
+    private List<int[]> generatePermutations(List<Integer> commissionIds, int id) {
+        Cloner cloner=new Cloner();
+        List<int[]> permutations = new LinkedList<>();
+        int[] initialArray = new int[commissionIds.size() + 1];
+        int i = 0;
+        for (int x : commissionIds) {
+            initialArray[i++] = x;
+        }
+        initialArray[i++] = id;
+        
+        perm(commissionIds.size(), initialArray, permutations);
+        
+        return permutations;
     }
     
+    private void perm(int k, int[] array, List<int[]> permutations)
+    {
+        if (k == 0) 
+        {
+            Cloner cloner=new Cloner();
+            int[] arrayToAdd = cloner.deepClone(array);
+            permutations.add(arrayToAdd);
+        }
+        else
+        {
+            for (int i = 0; i <= k; i++) {
+               swap(array, i, k);
+               perm(k-1, array, permutations);
+               swap(array, i, k);
+            }
+        }
+    }
     
+    public void swap(int[] array, int a, int b)
+    {
+        int k = array[a];
+        array[a] = array[b];
+        array[b] = k;
+    }
+
+    private void resetSchedule() {
+        this.intervals = new LinkedList<>();
+        Interval newInterval = new Interval(timeLimit, timeLimit, timeLimit, IntervalType.GOING_BACK_TO_BASE, 0, 0, this.locationBase);
+        this.intervals.add(newInterval);
+        this.reCountGoings();
+    }
+
+    private CommissionViewAndCost checkPermutation(double oldCost, int[] x) {
+        resetSchedule();
+        
+        for(int commissionId : x)
+        {
+            Commission commissionToInsert = this.commissions.get(commissionId);
+            InsertProperties insertProperties = getBestInsertion(commissionToInsert);
+            if (insertProperties == null) 
+            {
+                return null;
+            }
+            else
+            {
+                addCommissionPrecisively(insertProperties, commissionToInsert);
+                this.commissionIds.remove((Integer)commissionToInsert.getId());
+            }
+        }
+        
+        CommissionViewAndCost ret = new CommissionViewAndCost();
+        ret.cost = countCost() - oldCost;
+        ret.intervals = this.intervals;
+        ret.scheduleId = this.id;
+        
+        return ret;
+    }
+
+    void addCommissionPrecisively(CommissionViewAndCost best, Commission commission) 
+    {
+        this.intervals = best.intervals;
+        this.commissions.put(commission.getId(), commission);
+        this.commissionIds.add(commission.getId());
+    }
+    
+    public List<Commission> getCommissions()
+    {
+        return new LinkedList<Commission>(this.commissions.values());
+    }
 }
