@@ -1,6 +1,6 @@
 
 import com.rits.cloning.Cloner;
-import com.rits.cloning.*;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -149,7 +149,7 @@ public class Schedule {
             double indexToInsert = getIndexToInsertForPickup(leftBorder, rightBorder, timeWindow.begin, timeWindow.end);
             if (indexToInsert >= 0) 
             {
-                Interval intervalToInsert = new Interval(indexToInsert, indexToInsert, indexToInsert + serviceTime, IntervalType.PICKUP, commission.getId(), commission.getPicupDemand(), commission.getPickupLocation());
+                Interval intervalToInsert = new Interval(indexToInsert, indexToInsert, indexToInsert + serviceTime, IntervalType.PICKUP, commission.getId(), commission.getPickupDemand(), commission.getPickupLocation());
                 this.intervals.add(intervalToInsert);
                 sortIntervals();
                 return indexToInsert;
@@ -284,7 +284,7 @@ public class Schedule {
     }
 
     public void addCommissionPrecisively(InsertProperties properties, Commission commission) {
-        Interval insertInterval = new Interval(properties.pickupIndex, properties.pickupIndex, properties.pickupIndex + commission.getPickupServiceTime(), IntervalType.PICKUP, commission.getId(), commission.getPicupDemand(), commission.getPickupLocation());
+        Interval insertInterval = new Interval(properties.pickupIndex, properties.pickupIndex, properties.pickupIndex + commission.getPickupServiceTime(), IntervalType.PICKUP, commission.getId(), commission.getPickupDemand(), commission.getPickupLocation());
         Interval deliveryInterval = new Interval(properties.deliveryIndex, properties.deliveryIndex, properties.deliveryIndex + commission.getDeliveryServiceTime(), IntervalType.DELIVERY, commission.getId(), commission.getDeliveryDemand(), commission.getDeliveryLocation());
         this.intervals.add(insertInterval);
         this.intervals.add(deliveryInterval);
@@ -307,8 +307,8 @@ public class Schedule {
         removePickup(commissionId);
         sortIntervals();
         reCountGoings();
-        this.commissionIds.remove(commissionId);
-        this.commissions.remove(commissionId);
+        this.commissionIds.remove((Integer) commissionId);
+        this.commissions.remove((Integer) commissionId);
     }
 
     public CommissionViewAndCost tryToAddBruteForce(Commission commission) {

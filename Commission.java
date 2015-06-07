@@ -26,7 +26,7 @@ class Commission {
         return this.pickup.getTimeWindow();
     }
     
-    public int getPicupDemand()
+    public int getPickupDemand()
     {
         return this.pickup.getDemand();
     }
@@ -59,4 +59,13 @@ class Commission {
                 + this.getPickupLocation().getDistanceTo(this.getDeliveryLocation())
                 + this.getDeliveryLocation().getDistanceTo(location);
     }
+
+    public double R(Commission anotherCommission, double alfa, double beta, double gamma) {
+        return alfa * (this.pickup.getLocation().getDistanceTo(anotherCommission.pickup.getLocation()) +
+                this.delivery.getLocation().getDistanceTo(anotherCommission.delivery.getLocation())) +
+                beta * (Math.abs(this.pickup.getServiceTime() - anotherCommission.pickup.getServiceTime()) +
+                Math.abs(this.delivery.getServiceTime() - anotherCommission.delivery.getServiceTime())) +
+                gamma * (Math.abs(this.getPickupDemand() - anotherCommission.getPickupDemand()));
+    }
+
 }

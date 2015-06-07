@@ -17,7 +17,7 @@ public class Launcher {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        Solution solution = new LargeNeighbourhoodAlgorithm().run(config, 200); // second arg is number of iterations
+        Solution solution = new LargeNeighbourhoodAlgorithm().run(config, 2000); // second arg is number of iterations
         solution.printSchedules();
         System.out.println("Cost: " + solution.getCost());
         System.out.println("Number of holons: " + solution.getNumberOfHolons());

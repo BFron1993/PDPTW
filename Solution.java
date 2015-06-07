@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,24 @@ public class Solution {
         return indexScheduleMap.size();
     }
 
+    public void checkIfEmptySchedulesAndTryToRemove() {
+        List<Integer> schedulesToRemove = new ArrayList<>();
+        for (Integer scheduleIndex : indexScheduleMap.keySet()) {
+            int sum = 0;
+            for (Integer commissionIndex : commissionScheduleMap.keySet()) {
+                if (commissionScheduleMap.get(commissionIndex).equals(scheduleIndex)) {
+                    sum += 1;
+                }
+            }
+            if (sum == 0) {
+//                System.out.println("znalaz³o!");
+                schedulesToRemove.add(scheduleIndex);
+            }
+        }
+        for(Integer scheduleId : schedulesToRemove) {
+            this.removeSchedule(scheduleId);
+        }
+    }
     
     public int getNewSchedule()
     {

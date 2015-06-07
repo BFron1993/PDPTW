@@ -2,6 +2,7 @@
 import com.rits.cloning.Cloner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -21,7 +22,8 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
     @Override
     public Solution run(Configuration configuration, int numberOfIterations) {
         Solution bestSolution = getInitialSolution(configuration);
-        System.out.println(bestSolution.getCost());
+        double initialCost = bestSolution.getCost();
+        System.out.println(initialCost);
         double qParameter = 0.4; // percent of removed commissions
         int numberOfCommissionsToRemove = (int) (qParameter * configuration.getCommissions().size());
 
@@ -32,8 +34,20 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
             boolean foundCommissionWithNoWayToInsert = false;
             solutionPrimPrim = cloner.deepClone(solutionPrim);
 
-//            List<Commission> commissionsToAdd = randomRemoval(solutionPrimPrim, numberOfCommissionsToRemove, configuration.getCommissions());
-            List<Commission> commissionsToAdd = randomRemoval(solutionPrimPrim, numberOfCommissionsToRemove, configuration.getCommissions());
+            int choice = randomGenerator.nextInt(3);
+            List<Commission> commissionsToAdd;
+            switch (choice) {
+                case 0: {
+                    commissionsToAdd = randomRemoval(solutionPrimPrim, numberOfCommissionsToRemove, configuration.getCommissions());
+                    break;
+                }
+                case 1: {
+                    commissionsToAdd = scheduleRemoval(solutionPrimPrim);
+                    break;
+                }
+                default: commissionsToAdd = shawRemoval(solutionPrimPrim, numberOfCommissionsToRemove, configuration.getCommissions());
+            }
+
             // tutaj dodawanie do solution prim prim
             // regret heuristic
 
@@ -88,27 +102,57 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
                 solutionPrimPrim = cloner.deepClone(solutionPrim);
                 continue;
             }
-
+            solutionPrimPrim.checkIfEmptySchedulesAndTryToRemove();
 
             double primPrimCost = solutionPrimPrim.getCost();
             double primCost = solutionPrim.getCost();
             double bestCost = bestSolution.getCost();
             System.out.println(bestCost);
-            if (primPrimCost < bestCost) {
+            if (solutionPrimPrim.getNumberOfHolons() < bestSolution.getNumberOfHolons() ||
+                    (solutionPrimPrim.getNumberOfHolons() == bestSolution.getNumberOfHolons() && primPrimCost < bestCost)) {
                 bestSolution = cloner.deepClone(solutionPrimPrim);
             }
 
-            if (primPrimCost < primCost) {
+            if (solutionPrimPrim.getNumberOfHolons() < solutionPrim.getNumberOfHolons() ||
+                    (solutionPrimPrim.getNumberOfHolons() == solutionPrim.getNumberOfHolons() && primPrimCost < primCost)) {
                 solutionPrim = cloner.deepClone(solutionPrimPrim);
             }
             i++;
         }
+        System.out.println("Initial cost: " + initialCost);
         return bestSolution;
     }
 
-    private List<Commission> removalOfWorst(Solution solution, int numberOfCommissionsToRemove, List<Commission> commissions) {
+    private Commission getRandomCommissionNotUsed(List<Commission> commissions, List<Commission> usedCommissions) {
+        int size = commissions.size();
+        Commission commission = commissions.get(randomGenerator.nextInt(size));
+        while (usedCommissions.contains(commission)) {
+            commission = commissions.get(randomGenerator.nextInt(size));
+        }
+        return commission;
+    }
 
-        return null;
+    private List<Commission> shawRemoval(Solution solution, int numberOfCommissionsToRemove, List<Commission> commissions) {
+        List<Commission> commissionsToRemove = new ArrayList<Commission>();
+        Commission commission = getRandomCommissionNotUsed(commissions, commissionsToRemove);
+        commissionsToRemove.add(commission);
+        solution.removeCommission(commission);
+        while (commissions.size() < numberOfCommissionsToRemove) {
+            commission = commissionsToRemove.get(randomGenerator.nextInt(commissionsToRemove.size()));
+            List<Commission> commissionsNotToRemove = new ArrayList<Commission>();
+            // creating array containing all requests from commissions not in commissions to remove
+            for(Commission commissionToCheck : commissions) {
+                if (!commissionsToRemove.contains(commissionToCheck)) {
+                    commissionsNotToRemove.add(commissionToCheck);
+                }
+            }
+            Collections.sort(commissionsNotToRemove, new ShawRemovalComparator(commission, 1.0, 1.0, 1.0));
+            commission = commissionsNotToRemove.get(randomGenerator.nextInt(commissionsNotToRemove.size()));
+            commissionsToRemove.add(commission);
+            solution.removeCommission(commission);
+        }
+
+        return commissionsToRemove;
     }
 
 
@@ -116,16 +160,19 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
         List<Commission> usedComissions = new ArrayList<Commission>();
         int size = commissions.size();
         for (int i = 0; i < numberOfCommissionsToRemove; i++) {
-            Commission commission = commissions.get(randomGenerator.nextInt(size));
-            while (usedComissions.contains(commission)) {
-                commission = commissions.get(randomGenerator.nextInt(size));
-            }
+            Commission commission = getRandomCommissionNotUsed(commissions, usedComissions);
             usedComissions.add(commission);
             solution.removeCommission(commission);
         }
         return usedComissions;
     }
 
+    private List<Commission> scheduleRemoval(Solution solution) {
+        Object[] scheduleIds = solution.getIndexScheduleMap().keySet().toArray();
+        int randomId = (int) scheduleIds[randomGenerator.nextInt(scheduleIds.length)];
+        List<Commission> usedCommissions = solution.removeSchedule(randomId);
+        return usedCommissions;
+    }
 
     private Solution getInitialSolution(Configuration configuration) {
         Solution bestSolution = new SolomonInsertion().getInitialSolution(configuration, 0.9);
@@ -140,4 +187,5 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
         }
         return bestSolution;
     }
+
 }
