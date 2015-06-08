@@ -1,3 +1,5 @@
+package pl.edu.agh.pdptw;
+
 public class ActionProxy {
     public int id;
     public int demand;

@@ -1,3 +1,5 @@
+package pl.edu.agh.pdptw;
+
 public enum IntervalType {
     DELIVERY,
     PICKUP,

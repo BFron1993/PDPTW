@@ -1,3 +1,4 @@
+package pl.edu.agh.pdptw;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ public class Solution {
     private Location base;
     private int timeLimit;
     private int capacity;
-            
+
     public Solution(Location base, int timeLimit, int capacity)
     {
         this.base = base;
@@ -22,6 +23,7 @@ public class Solution {
     public Map<Integer, Schedule> getIndexScheduleMap() {
         return indexScheduleMap;
     }
+
 
     public int getNumberOfHolons() {
         return indexScheduleMap.size();
@@ -37,7 +39,7 @@ public class Solution {
                 }
             }
             if (sum == 0) {
-//                System.out.println("znalaz³o!");
+//                System.out.println("znalazï¿½o!");
                 schedulesToRemove.add(scheduleIndex);
             }
         }
@@ -91,14 +93,6 @@ public class Solution {
             System.out.println("-----------------------------------------------------------------");
         }
     }
-
-    public double getCost() {
-        double sum = 0.0;
-        for (Schedule schedule : indexScheduleMap.values()) {
-            sum += schedule.countCost();
-        }
-        return sum;
-    }
     
     public void removeCommission(Commission commission)
     {
@@ -133,5 +127,50 @@ public class Solution {
         }
         return retCommissions;
     }
-    
+
+    public Map<Integer, Integer> getCommissionScheduleMap() {
+        return commissionScheduleMap;
+    }
+
+    public void setCommissionScheduleMap(Map<Integer, Integer> commissionScheduleMap) {
+        this.commissionScheduleMap = commissionScheduleMap;
+    }
+
+    public void setIndexScheduleMap(Map<Integer, Schedule> indexScheduleMap) {
+        this.indexScheduleMap = indexScheduleMap;
+    }
+
+    public Location getBase() {
+        return base;
+    }
+
+    public void setBase(Location base) {
+        this.base = base;
+    }
+
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(int timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public double getCost() {
+        double sum = 0.0;
+        for (Schedule schedule : indexScheduleMap.values()) {
+            sum += schedule.countCost();
+        }
+        return sum;
+    }
+
+
 }

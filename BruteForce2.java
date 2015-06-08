@@ -1,10 +1,13 @@
+package pl.edu.agh.pdptw;
 
 import com.rits.cloning.Cloner;
+import pl.edu.agh.pdptw.IAlgorithm;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BruteForce2 implements IAlgorithm{
+public class BruteForce2 implements IAlgorithm {
 
     @Override
     public Solution run(Configuration configuration, int numberOfIterations) 
@@ -21,6 +24,11 @@ public class BruteForce2 implements IAlgorithm{
             //System.out.println(i + " " + result.getCost());
         }
         return  best;
+    }
+
+    @Override
+    public String getCurrentSolution() {
+        return null;
     }
 
     private Solution buildSolution(Configuration configuration) {

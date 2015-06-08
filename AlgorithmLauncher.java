@@ -4,9 +4,14 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Launcher {
+/**
+ * Created by Anna on 2015-06-08.
+ */
+public class AlgorithmLauncher {
 
-    public static void main(String[] args) {
+    private IAlgorithm algorithm;
+
+    public Solution computeSolution() {
         ConfigurationReader reader = new ConfigurationReader();
         Configuration config = null;
         try {
@@ -17,10 +22,14 @@ public class Launcher {
         catch (IOException ex) {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        Solution solution = new LargeNeighbourhoodAlgorithm().run(config, 2000); // second arg is number of iterations
-        solution.printSchedules();
-        System.out.println("Cost: " + solution.getCost());
-        System.out.println("Number of holons: " + solution.getNumberOfHolons());
+        // tutaj wybieranie algosa
+        algorithm = new LargeNeighbourhoodAlgorithm();
+
+        Solution solution = algorithm.run(config, 2000); // second arg is number of iterations
+        return solution;
+    }
+
+    public String getCurrentSolution() {
+        return algorithm.getCurrentSolution();
     }
 }

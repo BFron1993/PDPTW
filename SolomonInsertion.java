@@ -1,3 +1,5 @@
+package pl.edu.agh.pdptw;
+
 import java.util.ArrayList;
 import java.util.List;
 

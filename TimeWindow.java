@@ -1,3 +1,5 @@
+package pl.edu.agh.pdptw;
+
 public class TimeWindow {
     public double begin;
     public double end;

@@ -1,4 +1,6 @@
-public class Interval 
+package pl.edu.agh.pdptw;
+
+public class Interval
 {
     public double begin;
     public double end;

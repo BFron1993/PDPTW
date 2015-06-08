@@ -1,6 +1,10 @@
+package pl.edu.agh.pdptw;
 
 import com.rits.cloning.Cloner;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.ObjectMapper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,15 +17,17 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
 
     private Cloner cloner;
     private Random randomGenerator;
+    private Solution bestSolution;
 
     public LargeNeighbourhoodAlgorithm() {
         this.cloner = new Cloner();
         this.randomGenerator = new Random();
+        this.bestSolution = null;
     }
 
     @Override
     public Solution run(Configuration configuration, int numberOfIterations) {
-        Solution bestSolution = getInitialSolution(configuration);
+        bestSolution = getInitialSolution(configuration);
         double initialCost = bestSolution.getCost();
         System.out.println(initialCost);
         double qParameter = 0.4; // percent of removed commissions
@@ -55,6 +61,7 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
                 Commission commissionToRemove = null;
                 InsertProperties bestInsertProperties = null;
                 Double maxCostDifference = null;
+                boolean foundCommissionWithOneWayToInsert = false;
                 for (Commission commission : commissionsToAdd) {
                     InsertProperties firstBestInsertProperties = null, secondBestInsertProperties = null;
                     for(Integer indexOfSchedule : solutionPrimPrim.getIndexScheduleMap().keySet()) {
@@ -80,17 +87,22 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
 
                         }
                     }
+
                     if(secondBestInsertProperties == null && firstBestInsertProperties != null) {
-                        commissionToRemove = commission;
-                        bestInsertProperties = firstBestInsertProperties;
-//                        maxCostDifference = -1.0;
-                        break;
-                    } else if (secondBestInsertProperties == null && firstBestInsertProperties == null){
-                        foundCommissionWithNoWayToInsert = true;
-                    } else if (bestInsertProperties == null || (secondBestInsertProperties.cost - firstBestInsertProperties.cost) > maxCostDifference) {
-                        commissionToRemove = commission;
-                        bestInsertProperties = firstBestInsertProperties;
-                        maxCostDifference = secondBestInsertProperties.cost - firstBestInsertProperties.cost;
+                        if(!foundCommissionWithNoWayToInsert ||
+                                (bestInsertProperties != null && (firstBestInsertProperties.cost < bestInsertProperties.cost))) {
+                            foundCommissionWithNoWayToInsert = true;
+                            commissionToRemove = commission;
+                            bestInsertProperties = firstBestInsertProperties;
+                        }
+                    } else if (!foundCommissionWithNoWayToInsert) {
+                        if (secondBestInsertProperties == null && firstBestInsertProperties == null){
+                            foundCommissionWithNoWayToInsert = true;
+                        } else if (bestInsertProperties == null || (secondBestInsertProperties.cost - firstBestInsertProperties.cost) > maxCostDifference) {
+                            commissionToRemove = commission;
+                            bestInsertProperties = firstBestInsertProperties;
+                            maxCostDifference = secondBestInsertProperties.cost - firstBestInsertProperties.cost;
+                        }
                     }
                 }
                 if(!foundCommissionWithNoWayToInsert) {
@@ -121,6 +133,17 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
         }
         System.out.println("Initial cost: " + initialCost);
         return bestSolution;
+    }
+
+    @Override
+    public String getCurrentSolution() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(bestSolution);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     private Commission getRandomCommissionNotUsed(List<Commission> commissions, List<Commission> usedCommissions) {

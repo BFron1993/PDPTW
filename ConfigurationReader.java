@@ -1,3 +1,4 @@
+package pl.edu.agh.pdptw;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

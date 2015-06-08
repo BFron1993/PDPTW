@@ -1,3 +1,4 @@
+package pl.edu.agh.pdptw;
 
 import java.util.Collections;
 import java.util.List;

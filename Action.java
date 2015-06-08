@@ -1,3 +1,5 @@
+package pl.edu.agh.pdptw;
+
 public class Action {
     private int demand;
     private double timeWindowBegin;

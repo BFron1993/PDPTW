@@ -1,3 +1,4 @@
+package pl.edu.agh.pdptw;
 
 import com.rits.cloning.Cloner;
 

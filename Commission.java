@@ -1,3 +1,5 @@
+package pl.edu.agh.pdptw;
+
 class Commission {
     
     private Action pickup;
