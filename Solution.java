@@ -48,7 +48,7 @@ public class Solution {
         }
     }
     
-    public int getNewSchedule()
+    public int createNewSchedule()
     {
         Schedule newSchedule = new Schedule(this.capacity, this.timeLimit, this.base);
         this.indexScheduleMap.put(newSchedule.getIndex(), newSchedule);

@@ -12,7 +12,7 @@ public class Launcher {
         try {
 //            config = reader.readConfig("D:\\pdptw-algo-test\\benchmarks\\pdp_100\\lc101.txt");
 //            config = reader.readConfig("C:\\benchmarks\\1000\\LC1101.txt");
-            config = reader.readConfig("C:\\benchmarks\\pdp_100\\lc101.txt");
+            config = reader.readConfig("C:\\benchmarks\\pdp_200\\LC1_2_2.txt");
         }
         catch (IOException ex) {
             Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, null, ex);

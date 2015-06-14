@@ -89,13 +89,13 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
                     }
 
                     if(secondBestInsertProperties == null && firstBestInsertProperties != null) {
-                        if(!foundCommissionWithNoWayToInsert ||
-                                (bestInsertProperties != null && (firstBestInsertProperties.cost < bestInsertProperties.cost))) {
-                            foundCommissionWithNoWayToInsert = true;
+                        if(!foundCommissionWithOneWayToInsert ||
+                                (bestInsertProperties != null && (firstBestInsertProperties.cost > bestInsertProperties.cost))) {
+                            foundCommissionWithOneWayToInsert = true;
                             commissionToRemove = commission;
                             bestInsertProperties = firstBestInsertProperties;
                         }
-                    } else if (!foundCommissionWithNoWayToInsert) {
+                    } else if (!foundCommissionWithOneWayToInsert) {
                         if (secondBestInsertProperties == null && firstBestInsertProperties == null){
                             foundCommissionWithNoWayToInsert = true;
                         } else if (bestInsertProperties == null || (secondBestInsertProperties.cost - firstBestInsertProperties.cost) > maxCostDifference) {
@@ -119,7 +119,7 @@ public class LargeNeighbourhoodAlgorithm implements IAlgorithm {
             double primPrimCost = solutionPrimPrim.getCost();
             double primCost = solutionPrim.getCost();
             double bestCost = bestSolution.getCost();
-            System.out.println(bestCost);
+            System.out.println(bestCost + " " + bestSolution.getNumberOfHolons());
             if (solutionPrimPrim.getNumberOfHolons() < bestSolution.getNumberOfHolons() ||
                     (solutionPrimPrim.getNumberOfHolons() == bestSolution.getNumberOfHolons() && primPrimCost < bestCost)) {
                 bestSolution = cloner.deepClone(solutionPrimPrim);

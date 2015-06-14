@@ -76,7 +76,7 @@ public class SolomonInsertion {
 
         while(!unrouted.isEmpty()) {
             leader = findMostExpensiveCommission(unrouted, baseLocation);
-            scheduleIndex = solution.getNewSchedule();
+            scheduleIndex = solution.createNewSchedule();
             solution.addCommission(solution.countCostOfInsert(leader, scheduleIndex), leader);
             unrouted.remove(leader);
 

@@ -1,7 +1,6 @@
 package pl.edu.agh.pdptw;
 
 import com.rits.cloning.Cloner;
-import pl.edu.agh.pdptw.IAlgorithm;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -36,7 +35,7 @@ public class BruteForce2 implements IAlgorithm {
         List<Integer> listOfSchedules = new LinkedList<>();
         List<Commission> commissions = configuration.getCommissions();
         for (Commission commission : commissions) {
-            listOfSchedules.add(solution.getNewSchedule());
+            listOfSchedules.add(solution.createNewSchedule());
             CommissionViewAndCost best = null;
             for (int i : listOfSchedules) {
                 CommissionViewAndCost result = solution.tryToAddCommissionBruteForce(commission, i);
@@ -51,7 +50,7 @@ public class BruteForce2 implements IAlgorithm {
             }
             if (best == null) 
             {
-               int newSchedule = solution.getNewSchedule();
+               int newSchedule = solution.createNewSchedule();
                InsertProperties properties = solution.countCostOfInsert(commission, newSchedule);
                solution.addCommission(properties, commission);
                listOfSchedules.add(newSchedule);
@@ -67,7 +66,7 @@ public class BruteForce2 implements IAlgorithm {
         Solution bestHolons = cloner.deepClone(solution);
         Solution bestDistance = cloner.deepClone(solution);
         
-        int maxIterationWithNoBetterSolution =  solution.getNumberOfHolons();
+        int maxIterationWithNoBetterSolution =  100;
         int iterationsWithNoBetterSolution = 0;
         boolean stop = false;
         
@@ -132,7 +131,7 @@ public class BruteForce2 implements IAlgorithm {
             }
             if (best == null) 
             {
-               int newSchedule = solution.getNewSchedule();
+               int newSchedule = solution.createNewSchedule();
                InsertProperties properties = solution.countCostOfInsert(commission, newSchedule);
                solution.addCommission(properties, commission);
                listOfSchedules.add(newSchedule);
